@@ -39,9 +39,8 @@
 <script setup>
 import { ref,reactive } from 'vue'
 import { ElNotification } from 'element-plus'
-import { useRouter } from 'vue-router'
 import { login } from '~/api/manager'
-
+import { useRouter } from 'vue-router'
 const router = useRouter()
 // do not use same name with ref
 const form = reactive({
