@@ -19,13 +19,18 @@ const toolbarConfig = { excludeKeys:["uploadVideo"] };
 const editorConfig = { placeholder: '请输入内容...' };
 editorConfig.MENU_CONF = {}
 editorConfig.MENU_CONF['uploadImage'] = {
-    base64LimitSize: 100 * 1024, // 10kb
-    server: '/api/upload/rich_editor_upload',
+    maxFileSize: 20* 1024 * 1024, // 10kb
+    server: '/api/upload_file',
+    withCredentials: false,
+    timeout: 1 * 1000, // 5 秒
+    fieldName: 'file',
+
 }
 editorConfig.MENU_CONF['insertImage'] ={
     parseImageSrc:(src) =>{
+        console.log(src)
         if(src.indexOf("http") !==0){
-            return `/api/${src}`
+            return `/api${src}`
         }
         return src
     }
