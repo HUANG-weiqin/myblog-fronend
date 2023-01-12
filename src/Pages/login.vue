@@ -78,17 +78,17 @@ const onSubmit = () => {
 
             console.log(res)
             // 提示成功
-            if (res.data.code == 200){
+            if (res.data.errno == 0){
                 ElNotification({
                     message: "登录成功",
                     type: 'success',
                     duration:3000
                 })
-                router.push("/")
+                router.push("/userhome")
             } 
             else{
                 ElNotification({
-                    message: res.data.msg + " " + res.data.code,
+                    message: res.data.message + " " + res.data.errno,
                     type: 'error',
                     duration:3000
                 })

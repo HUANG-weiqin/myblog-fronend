@@ -2,6 +2,7 @@
     <div>
         <el-button type="text" @click="submit">Submit</el-button>
         <el-button type="text" @click="abandon">Abandon</el-button>
+        <el-input type="textarea" :rows="1" placeholder="tag1,tag2,tag3..." v-model="addArticle.tags"></el-input>
     </div>
     
     <hr class="hr-solid">
@@ -27,6 +28,7 @@ const router = useRouter()
 const addArticle = reactive({
     title: "",
     content: "",
+    tags:""
 })
 
 const abandon = () => {
@@ -40,7 +42,7 @@ const abandon = () => {
     }
   )
     .then(() => {
-        router.push('/')
+        router.push('/userhome')
     })
     .catch(() => {
       ElMessage({
@@ -68,7 +70,7 @@ const submit = () => {
             type: 'success',
             message: 'submit ok: ',
             })
-            router.push('/')
+            router.push('/userhome')
         }
         catch(err){
             ElMessage({
@@ -88,7 +90,7 @@ const submit = () => {
 }
 
 const onSubmit = () => {
-    return addBlog(addArticle.title, addArticle.content)
+    return addBlog(addArticle.title, addArticle.content,addArticle.tags)
 }
 
 

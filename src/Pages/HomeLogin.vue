@@ -2,11 +2,11 @@
   <ul class="navi clearfix">
     <li @click="reset">主页</li>
     <li>关于我</li>
+    <li @click="router.push('/edit')">写文章</li>
     <li style="float:right" class="dropdown">
       <el-avatar class="dropbtn"> user </el-avatar>
       <div class="dropdown-content" style="left:-100px">
-        <p @click="router.push('/login')">登录</p>
-        <p>敬请期待</p>
+        <p @click="router.push('/')">退出</p>
       </div>
     </li>
   </ul>
@@ -15,10 +15,14 @@
     <el-col :span="16">
 
       <div v-if="data.show_content_id < 0">
-        <div class="blog-card" @click="showText(index)" v-for="(item, index) in data.text_data" :key="index">
+        <div class="blog-card" v-for="(item, index) in data.text_data" :key="index">
 
-          <div>
+          <div @click="showText(index)">
             <h1 class="titlefont">{{ item.blog_title }}</h1>
+          </div>
+          <div>
+            <el-button type="text">Modify</el-button>
+            <el-button type="text" @click="delete_blog(item.blog_id)">Delete</el-button>
           </div>
 
           <hr class="hr-solid">
@@ -29,7 +33,7 @@
             <el-icon>
               <View />
             </el-icon>
-            <span>{{ item.readed_numb }}</span>
+            <span>{{item.readed_numb}}</span>
             <div style="float: right;">
               <span>{{ item.modify_date }}</span>
             </div>
@@ -49,18 +53,11 @@
 
     </el-col>
     <el-col :span="8">
-      <div class="m-1 p-3">
-        <div class=" bg-dark-200 p-5">
-          <el-tag v-for="(item, index) in data.tags" :key="index" class="m-1" @click="loadBlogsByTag(item)"
-            :type="success">
-            {{ item }}
-          </el-tag>
-        </div>
-        <div class="flex-col items-center justify-center bg-dark-200 my-3 p-10">
-          <p class="supportfont">Power by SpringBoot Vue3</p>
-          <p class="supportfont">Author : Huang weiqin</p>
-          <p class="supportfont">Email : weiqin.huang@gmail.com</p>
-        </div>
+      <div class="bg-light-900 m-1 p-3">
+        <el-tag v-for="(item, index) in data.tags" :key="index" class="m-1" @click="loadBlogsByTag(item)" closable
+          :type="success">
+          {{ item }}
+        </el-tag>
       </div>
     </el-col>
   </el-row>
@@ -71,8 +68,9 @@
 
 import { reactive, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { getBlogs, getBlogsNumber, readBlog, allTags, blogsNumberByTag } from '~/api/manager'
+import { deleteBlog,getBlogs, getBlogsNumber, readBlog, allTags, blogsNumberByTag } from '~/api/manager'
 import { ElPagination } from 'element-plus';
+import { ElMessage, ElMessageBox } from 'element-plus'
 
 const router = useRouter()
 
@@ -115,10 +113,9 @@ const loadTags = async () => {
   data.tags = res.data.data
 }
 
+
 const showText = (idx) => {
   data.show_content_id = idx
-  readBlog(data.text_data[idx].blog_id)
-  console.log(data.text_data[idx].blog_id)
 }
 
 const loadBlogsByTag = async (tag) => {
@@ -129,8 +126,31 @@ const loadBlogsByTag = async (tag) => {
 
 const reset = () => {
   data.curTag = "",
-    data.show_content_id = -1
+  data.show_content_id = -1
   loadBlogs()
+}
+
+const delete_blog = (id) => {
+
+  ElMessageBox.confirm(
+    'Will delete the blog. Continue?',
+    'warning',
+    {
+      confirmButtonText: 'OK',
+      cancelButtonText: 'Cancel',
+      type: 'warning',
+    }
+  )
+    .then(() => {
+      deleteBlog(id)
+      location.reload()
+    })
+    .catch(() => {
+      ElMessage({
+        type: 'info',
+        message: 'delete canceled',
+      })
+    })
 }
 
 </script>
